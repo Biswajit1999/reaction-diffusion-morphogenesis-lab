@@ -13,10 +13,7 @@
   ·
   <a href="#what-is-this-project">What is this?</a>
   ·
-
   <a href="#scientific-model">Scientific Model</a>
-=======
-  <a href="#the-scientific-model">Scientific Model</a>
   ·
   <a href="#features">Features</a>
   ·
