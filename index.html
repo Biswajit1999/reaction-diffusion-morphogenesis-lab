@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Reaction–Diffusion Morphogenesis Lab</title>
+  <meta name="description" content="A forkable interactive Gray–Scott reaction–diffusion simulator for students, educators, and researchers." />
+
+  <style>
+    :root {
+      --bg: #050914;
+      --panel: rgba(10, 18, 32, 0.88);
+      --panel2: rgba(15, 28, 50, 0.88);
+      --text: #edf5ff;
+      --muted: #91a7c7;
+      --dim: #526883;
+      --line: rgba(255, 255, 255, 0.10);
+      --cyan: #35f2d0;
+      --blue: #67a7ff;
+      --violet: #b184ff;
+      --amber: #ffba6a;
+      --red: #ff6f8a;
+      --green: #9cff8f;
+      --shadow: 0 28px 90px rgba(0,0,0,0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 12%, rgba(53,242,208,0.10), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(103,167,255,0.09), transparent 26%),
+        radial-gradient(circle at 55% 85%, rgba(177,132,255,0.08), transparent 30%),
+        linear-gradient(180deg, #030712, #050914 55%, #07101c);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1440px, 96vw);
+      margin: 0 auto;
+      padding: 22px 0 34px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 20px 22px;
+      margin-bottom: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      margin-bottom: 10px;
+    }
+
+    .lead {
+      max-width: 900px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .status {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      color: var(--cyan);
+      background: rgba(53,242,208,0.08);
+      border: 1px solid rgba(53,242,208,0.24);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 330px 1fr 330px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .controls {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .info {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .stage {
+      padding: 14px;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #020617;
+      border: 1px solid var(--line);
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.35);
+    }
+
+    #simCanvas {
+      width: 100%;
+      display: block;
+      image-rendering: auto;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .overlay-hint {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      color: rgba(237,245,255,0.72);
+      background: rgba(2,6,23,0.72);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: 800 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      pointer-events: none;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--text);
+      font: 900 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin: 10px 0 14px;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 20px;
+      height: 1px;
+      background: var(--cyan);
+    }
+
+    .control {
+      margin: 13px 0;
+    }
+
+    .control label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font: 800 0.72rem/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin-bottom: 7px;
+    }
+
+    .control strong {
+      color: var(--cyan);
+      font-weight: 900;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--cyan);
+    }
+
+    select, button {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.13);
+      background: rgba(15, 23, 42, 0.78);
+      color: var(--text);
+      border-radius: 13px;
+      padding: 10px 11px;
+      font: 900 0.74rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    select:hover, button:hover {
+      border-color: rgba(53,242,208,0.42);
+      background: rgba(53,242,208,0.08);
+      transform: translateY(-1px);
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin: 14px 0;
+    }
+
+    .primary {
+      color: var(--cyan);
+      border-color: rgba(53,242,208,0.28);
+      background: rgba(53,242,208,0.08);
+    }
+
+    .danger {
+      color: var(--red);
+      border-color: rgba(255,111,138,0.28);
+      background: rgba(255,111,138,0.07);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+
+    .metric {
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 12px;
+    }
+
+    .metric .k {
+      color: var(--dim);
+      font: 900 0.62rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .metric .v {
+      color: var(--cyan);
+      font: 900 1.28rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .metric .u {
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 5px;
+      line-height: 1.35;
+    }
+
+    .graph {
+      width: 100%;
+      height: 110px;
+      display: block;
+      background: #020617;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      margin: 10px 0 14px;
+    }
+
+    .mini {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+      background: rgba(2,6,23,0.45);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 13px;
+      margin: 10px 0;
+    }
+
+    .mini strong {
+      color: var(--text);
+    }
+
+    .mini code {
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+    }
+
+    footer {
+      margin-top: 16px;
+      color: var(--dim);
+      text-align: center;
+      font: 800 0.72rem/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 1180px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      .controls, .info {
+        position: relative;
+        top: auto;
+      }
+      header {
+        grid-template-columns: 1fr;
+      }
+      .status {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <div class="eyebrow">Interactive Scientific Computing</div>
+        <h1>Reaction–Diffusion Morphogenesis Lab</h1>
+        <p class="lead">
+          A forkable Gray–Scott simulator showing how simple local rules can produce spots,
+          stripes, coral-like growth and self-organising biological patterns. Designed for students,
+          teachers, science communicators and researchers who want one clean file they can understand,
+          modify and extend.
+        </p>
+      </div>
+      <div class="status">
+        <span class="pill" id="fpsPill">FPS --</span>
+        <span class="pill">No build tools</span>
+        <span class="pill">HTML + CSS + JS</span>
+      </div>
+    </header>
+
+    <main>
+      <aside class="panel controls">
+        <div class="section-title">Experiment</div>
+
+        <div class="control">
+          <label>Preset <strong id="presetRead">Coral</strong></label>
+          <select id="preset">
+            <option value="coral">Coral growth</option>
+            <option value="spots">Dividing spots</option>
+            <option value="worms">Worm trails</option>
+            <option value="zebra">Zebra stripes</option>
+            <option value="maze">Maze instability</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label>Feed rate F <strong id="feedRead">0.055</strong></label>
+          <input id="feed" type="range" min="0.010" max="0.090" step="0.001" value="0.055">
+        </div>
+
+        <div class="control">
+          <label>Kill rate k <strong id="killRead">0.062</strong></label>
+          <input id="kill" type="range" min="0.030" max="0.080" step="0.001" value="0.062">
+        </div>
+
+        <div class="control">
+          <label>Diffusion A <strong id="daRead">1.00</strong></label>
+          <input id="da" type="range" min="0.20" max="1.50" step="0.01" value="1.00">
+        </div>
+
+        <div class="control">
+          <label>Diffusion B <strong id="dbRead">0.50</strong></label>
+          <input id="db" type="range" min="0.05" max="1.00" step="0.01" value="0.50">
+        </div>
+
+        <div class="control">
+          <label>Simulation speed <strong id="speedRead">8</strong></label>
+          <input id="speed" type="range" min="1" max="30" step="1" value="8">
+        </div>
+
+        <div class="control">
+          <label>Brush size <strong id="brushRead">14</strong></label>
+          <input id="brush" type="range" min="4" max="50" step="1" value="14">
+        </div>
+
+        <div class="button-grid">
+          <button class="primary" id="pauseBtn">Pause</button>
+          <button id="seedBtn">Seed</button>
+          <button id="randomBtn">Randomise</button>
+          <button class="danger" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="section-title">View</div>
+
+        <div class="control">
+          <label>Palette <strong id="paletteRead">Nebula</strong></label>
+          <select id="palette">
+            <option value="nebula">Nebula</option>
+            <option value="thermal">Thermal</option>
+            <option value="mono">Scientific mono</option>
+            <option value="bio">Bio fluorescence</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label>Contrast <strong id="contrastRead">1.20</strong></label>
+          <input id="contrast" type="range" min="0.50" max="3.00" step="0.01" value="1.20">
+        </div>
+
+        <div class="control">
+          <label>Glow <strong id="glowRead">0.35</strong></label>
+          <input id="glow" type="range" min="0.00" max="1.00" step="0.01" value="0.35">
+        </div>
+
+        <div class="mini">
+          <strong>Interaction:</strong><br>
+          Drag on the field to inject chemical <code>B</code>. Try tiny changes in <code>F</code> and <code>k</code>; this system is sensitive.
+        </div>
+      </aside>
+
+      <section class="panel stage">
+        <div class="canvas-wrap">
+          <canvas id="simCanvas" width="720" height="720"></canvas>
+          <div class="overlay-hint">drag to seed morphogen · watch patterns self-organise</div>
+        </div>
+      </section>
+
+      <aside class="panel info">
+        <div class="section-title">Telemetry</div>
+
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="k">Mean B</div>
+            <div class="v" id="meanRead">--</div>
+            <div class="u">average activator level</div>
+          </div>
+          <div class="metric">
+            <div class="k">Variance</div>
+            <div class="v" id="varRead">--</div>
+            <div class="u">pattern contrast</div>
+          </div>
+          <div class="metric">
+            <div class="k">Edge Energy</div>
+            <div class="v" id="edgeRead">--</div>
+            <div class="u">front complexity</div>
+          </div>
+          <div class="metric">
+            <div class="k">Active Area</div>
+            <div class="v" id="areaRead">--</div>
+            <div class="u">fraction B &gt; threshold</div>
+          </div>
+        </div>
+
+        <div class="section-title">Live Trace</div>
+        <canvas class="graph" id="graphCanvas" width="620" height="220"></canvas>
+
+        <div class="section-title">What is happening?</div>
+        <div class="mini">
+          This model has two chemicals. Chemical <code>A</code> feeds the system.
+          Chemical <code>B</code> grows by consuming <code>A</code>, then both diffuse.
+          The surprise is that these simple local rules can generate global structure.
+        </div>
+
+        <div class="mini">
+          <strong>Model:</strong><br>
+          <code>∂A/∂t = Dₐ∇²A − AB² + F(1−A)</code><br>
+          <code>∂B/∂t = Dᵦ∇²B + AB² − (k+F)B</code>
+        </div>
+
+        <div class="mini">
+          <strong>Why forkable?</strong><br>
+          One file. No framework. No build step. A student can edit the equations;
+          a researcher can add anisotropic diffusion, noise, parameter sweeps or image export.
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      Gray–Scott reaction–diffusion · forkable scientific simulator · made for GitHub Pages
+    </footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("simCanvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const graphCanvas = document.getElementById("graphCanvas");
+    const gctx = graphCanvas.getContext("2d");
+
+    const N = 180;
+    const W = canvas.width;
+    const H = canvas.height;
+    const scale = W / N;
+
+    let A = new Float32Array(N * N);
+    let B = new Float32Array(N * N);
+    let nextA = new Float32Array(N * N);
+    let nextB = new Float32Array(N * N);
+
+    const image = ctx.createImageData(N, N);
+
+    const state = {
+      feed: 0.055,
+      kill: 0.062,
+      da: 1.0,
+      db: 0.5,
+      speed: 8,
+      brush: 14,
+      paused: false,
+      palette: "nebula",
+      contrast: 1.2,
+      glow: 0.35,
+      mouseDown: false,
+      mouseX: 0,
+      mouseY: 0,
+      frames: 0,
+      lastFpsTime: performance.now(),
+      fpsFrames: 0
+    };
+
+    const presets = {
+      coral: { feed: 0.055, kill: 0.062, da: 1.0, db: 0.50, name: "Coral" },
+      spots: { feed: 0.0367, kill: 0.0649, da: 1.0, db: 0.50, name: "Spots" },
+      worms: { feed: 0.078, kill: 0.061, da: 1.0, db: 0.50, name: "Worms" },
+      zebra: { feed: 0.030, kill: 0.062, da: 1.0, db: 0.62, name: "Zebra" },
+      maze: { feed: 0.029, kill: 0.057, da: 1.0, db: 0.45, name: "Maze" }
+    };
+
+    const history = {
+      mean: [],
+      variance: [],
+      edge: [],
+      area: []
+    };
+
+    function idx(x, y) {
+      x = (x + N) % N;
+      y = (y + N) % N;
+      return y * N + x;
+    }
+
+    function reset() {
+      for (let i = 0; i < N * N; i++) {
+        A[i] = 1.0;
+        B[i] = 0.0;
+      }
+
+      seedCircle(N / 2, N / 2, 12, 1.0);
+
+      for (let i = 0; i < 18; i++) {
+        seedCircle(
+          Math.random() * N,
+          Math.random() * N,
+          3 + Math.random() * 7,
+          0.35 + Math.random() * 0.45
+        );
+      }
+
+      for (const key of Object.keys(history)) history[key] = [];
+    }
+
+    function seedCircle(cx, cy, r, amount) {
+      const minX = Math.floor(cx - r);
+      const maxX = Math.ceil(cx + r);
+      const minY = Math.floor(cy - r);
+      const maxY = Math.ceil(cy + r);
+
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          const dx = x - cx;
+          const dy = y - cy;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < r) {
+            const falloff = Math.exp(-(d * d) / (r * r * 0.38));
+            const id = idx(x, y);
+            B[id] = Math.min(1.0, B[id] + amount * falloff);
+            A[id] = Math.max(0.0, A[id] - 0.5 * amount * falloff);
+          }
+        }
+      }
+    }
+
+    function randomise() {
+      for (let i = 0; i < N * N; i++) {
+        A[i] = 1.0;
+        B[i] = Math.random() < 0.025 ? Math.random() * 0.8 : 0.0;
+      }
+      for (let i = 0; i < 8; i++) {
+        seedCircle(Math.random() * N, Math.random() * N, 4 + Math.random() * 10, 0.8);
+      }
+    }
+
+    function lap(arr, x, y) {
+      return (
+        -1.0 * arr[idx(x, y)] +
+        0.2 * (
+          arr[idx(x + 1, y)] +
+          arr[idx(x - 1, y)] +
+          arr[idx(x, y + 1)] +
+          arr[idx(x, y - 1)]
+        ) +
+        0.05 * (
+          arr[idx(x + 1, y + 1)] +
+          arr[idx(x - 1, y + 1)] +
+          arr[idx(x + 1, y - 1)] +
+          arr[idx(x - 1, y - 1)]
+        )
+      );
+    }
+
+    function step() {
+      const F = state.feed;
+      const K = state.kill;
+      const dA = state.da;
+      const dB = state.db;
+      const dt = 1.0;
+
+      for (let y = 0; y < N; y++) {
+        for (let x = 0; x < N; x++) {
+          const id = idx(x, y);
+          const a = A[id];
+          const b = B[id];
+          const reaction = a * b * b;
+
+          let na = a + (dA * lap(A, x, y) - reaction + F * (1 - a)) * dt;
+          let nb = b + (dB * lap(B, x, y) + reaction - (K + F) * b) * dt;
+
+          nextA[id] = Math.max(0, Math.min(1.2, na));
+          nextB[id] = Math.max(0, Math.min(1.2, nb));
+        }
+      }
+
+      [A, nextA] = [nextA, A];
+      [B, nextB] = [nextB, B];
+    }
+
+    function colour(v, edge) {
+      const c = Math.max(0, Math.min(1, Math.pow(v * state.contrast, 0.82)));
+      const glow = edge * state.glow;
+
+      if (state.palette === "thermal") {
+        return [
+          15 + 240 * c + 60 * glow,
+          25 + 105 * Math.pow(c, 0.8) + 35 * glow,
+          45 + 25 * (1 - c)
+        ];
+      }
+
+      if (state.palette === "mono") {
+        const m = 25 + 230 * c + 30 * glow;
+        return [m * 0.80, m * 0.95, m];
+      }
+
+      if (state.palette === "bio") {
+        return [
+          10 + 60 * Math.pow(c, 2.0),
+          35 + 230 * c + 40 * glow,
+          20 + 130 * Math.sqrt(c) + 30 * glow
+        ];
+      }
+
+      return [
+        10 + 50 * c + 80 * glow,
+        20 + 235 * Math.pow(c, 0.72) + 45 * glow,
+        60 + 190 * Math.pow(1 - Math.abs(c - 0.55), 1.8)
+      ];
+    }
+
+    function render() {
+      let mean = 0;
+      let mean2 = 0;
+      let edgeSum = 0;
+      let area = 0;
+
+      const data = image.data;
+
+      for (let y = 0; y < N; y++) {
+        for (let x = 0; x < N; x++) {
+          const id = idx(x, y);
+          const b = B[id];
+
+          const gx = B[idx(x + 1, y)] - B[idx(x - 1, y)];
+          const gy = B[idx(x, y + 1)] - B[idx(x, y - 1)];
+          const edge = Math.sqrt(gx * gx + gy * gy);
+
+          mean += b;
+          mean2 += b * b;
+          edgeSum += edge;
+          if (b > 0.25) area++;
+
+          const [r, g, bl] = colour(b, edge);
+          const p = id * 4;
+          data[p] = Math.max(0, Math.min(255, r));
+          data[p + 1] = Math.max(0, Math.min(255, g));
+          data[p + 2] = Math.max(0, Math.min(255, bl));
+          data[p + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(image, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(canvas, 0, 0, N, N, 0, 0, W, H);
+
+      const total = N * N;
+      mean /= total;
+      const variance = mean2 / total - mean * mean;
+      const edgeEnergy = edgeSum / total;
+      const activeArea = area / total;
+
+      if (state.frames % 8 === 0) {
+        pushHistory(mean, variance, edgeEnergy, activeArea);
+        updateMetrics(mean, variance, edgeEnergy, activeArea);
+        drawGraph();
+      }
+    }
+
+    function pushHistory(mean, variance, edge, area) {
+      history.mean.push(mean);
+      history.variance.push(variance);
+      history.edge.push(edge);
+      history.area.push(area);
+
+      for (const key of Object.keys(history)) {
+        if (history[key].length > 240) history[key].shift();
+      }
+    }
+
+    function updateMetrics(mean, variance, edge, area) {
+      document.getElementById("meanRead").textContent = mean.toFixed(3);
+      document.getElementById("varRead").textContent = variance.toFixed(3);
+      document.getElementById("edgeRead").textContent = edge.toFixed(3);
+      document.getElementById("areaRead").textContent = (area * 100).toFixed(1) + "%";
+    }
+
+    function drawGraph() {
+      const w = graphCanvas.width;
+      const h = graphCanvas.height;
+
+      gctx.clearRect(0, 0, w, h);
+      gctx.fillStyle = "#020617";
+      gctx.fillRect(0, 0, w, h);
+
+      gctx.strokeStyle = "rgba(255,255,255,0.08)";
+      gctx.lineWidth = 1;
+
+      for (let y = 30; y < h; y += 40) {
+        gctx.beginPath();
+        gctx.moveTo(0, y);
+        gctx.lineTo(w, y);
+        gctx.stroke();
+      }
+
+      drawLine(history.mean, 0, 0.65, "#35f2d0");
+      drawLine(history.variance, 0, 0.12, "#b184ff");
+      drawLine(history.edge, 0, 0.22, "#ffba6a");
+
+      gctx.fillStyle = "rgba(237,245,255,0.74)";
+      gctx.font = "bold 18px ui-monospace, monospace";
+      gctx.fillText("live morphology trace", 16, 26);
+
+      gctx.font = "bold 12px ui-monospace, monospace";
+      gctx.fillStyle = "#35f2d0";
+      gctx.fillText("mean B", 16, h - 14);
+      gctx.fillStyle = "#b184ff";
+      gctx.fillText("variance", 110, h - 14);
+      gctx.fillStyle = "#ffba6a";
+      gctx.fillText("edge", 220, h - 14);
+    }
+
+    function drawLine(arr, min, max, col) {
+      if (arr.length < 2) return;
+
+      const w = graphCanvas.width;
+      const h = graphCanvas.height;
+
+      gctx.strokeStyle = col;
+      gctx.lineWidth = 2.2;
+      gctx.beginPath();
+
+      arr.forEach((v, i) => {
+        const x = i / 239 * w;
+        const y = h - 28 - Math.max(0, Math.min(1, (v - min) / (max - min))) * (h - 58);
+
+        if (i === 0) gctx.moveTo(x, y);
+        else gctx.lineTo(x, y);
+      });
+
+      gctx.stroke();
+    }
+
+    function animate(now) {
+      if (!state.paused) {
+        for (let i = 0; i < state.speed; i++) step();
+      }
+
+      render();
+
+      state.frames++;
+      state.fpsFrames++;
+
+      if (now - state.lastFpsTime > 800) {
+        const fps = state.fpsFrames * 1000 / (now - state.lastFpsTime);
+        document.getElementById("fpsPill").textContent = "FPS " + fps.toFixed(0);
+        state.fpsFrames = 0;
+        state.lastFpsTime = now;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function canvasPos(event) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+      return {
+        x: (clientX - rect.left) / rect.width * N,
+        y: (clientY - rect.top) / rect.height * N
+      };
+    }
+
+    function injectAt(event) {
+      const p = canvasPos(event);
+      seedCircle(p.x, p.y, state.brush, 0.9);
+    }
+
+    canvas.addEventListener("mousedown", e => {
+      state.mouseDown = true;
+      injectAt(e);
+    });
+
+    canvas.addEventListener("mousemove", e => {
+      if (state.mouseDown) injectAt(e);
+    });
+
+    window.addEventListener("mouseup", () => {
+      state.mouseDown = false;
+    });
+
+    canvas.addEventListener("touchstart", e => {
+      state.mouseDown = true;
+      injectAt(e);
+    }, { passive: true });
+
+    canvas.addEventListener("touchmove", e => {
+      if (state.mouseDown) injectAt(e);
+    }, { passive: true });
+
+    window.addEventListener("touchend", () => {
+      state.mouseDown = false;
+    });
+
+    function updateLabels() {
+      document.getElementById("feedRead").textContent = state.feed.toFixed(3);
+      document.getElementById("killRead").textContent = state.kill.toFixed(3);
+      document.getElementById("daRead").textContent = state.da.toFixed(2);
+      document.getElementById("dbRead").textContent = state.db.toFixed(2);
+      document.getElementById("speedRead").textContent = state.speed;
+      document.getElementById("brushRead").textContent = state.brush;
+      document.getElementById("contrastRead").textContent = state.contrast.toFixed(2);
+      document.getElementById("glowRead").textContent = state.glow.toFixed(2);
+      document.getElementById("paletteRead").textContent =
+        document.getElementById("palette").selectedOptions[0].textContent;
+    }
+
+    function bindSlider(id, key, parser = Number) {
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => {
+        state[key] = parser(el.value);
+        updateLabels();
+      });
+    }
+
+    bindSlider("feed", "feed");
+    bindSlider("kill", "kill");
+    bindSlider("da", "da");
+    bindSlider("db", "db");
+    bindSlider("speed", "speed", v => parseInt(v, 10));
+    bindSlider("brush", "brush", v => parseInt(v, 10));
+    bindSlider("contrast", "contrast");
+    bindSlider("glow", "glow");
+
+    document.getElementById("palette").addEventListener("change", e => {
+      state.palette = e.target.value;
+      updateLabels();
+    });
+
+    document.getElementById("preset").addEventListener("change", e => {
+      const p = presets[e.target.value];
+      state.feed = p.feed;
+      state.kill = p.kill;
+      state.da = p.da;
+      state.db = p.db;
+
+      document.getElementById("feed").value = p.feed;
+      document.getElementById("kill").value = p.kill;
+      document.getElementById("da").value = p.da;
+      document.getElementById("db").value = p.db;
+      document.getElementById("presetRead").textContent = p.name;
+
+      updateLabels();
+      reset();
+    });
+
+    document.getElementById("pauseBtn").addEventListener("click", e => {
+      state.paused = !state.paused;
+      e.target.textContent = state.paused ? "Resume" : "Pause";
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", reset);
+    document.getElementById("seedBtn").addEventListener("click", () => {
+      for (let i = 0; i < 14; i++) {
+        seedCircle(Math.random() * N, Math.random() * N, 4 + Math.random() * 10, 0.7);
+      }
+    });
+
+    document.getElementById("randomBtn").addEventListener("click", randomise);
+
+    updateLabels();
+    reset();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
