@@ -1,5 +1,25 @@
 # Reaction–Diffusion Morphogenesis Lab
 
+<p align="center">
+  <img src="images/reaction-diffusion-hero.png" alt="Reaction–Diffusion Morphogenesis Lab hero image" width="100%">
+</p>
+
+<h1 align="center">Reaction–Diffusion Morphogenesis Lab</h1>
+
+<p align="center">
+  <strong>An interactive Gray–Scott reaction–diffusion simulator for biological pattern formation.</strong>
+</p>
+
+<p align="center">
+  <a href="https://biswajit1999.github.io/reaction-diffusion-morphogenesis-lab/">Live Demo</a>
+  ·
+  <a href="#the-scientific-model">Scientific Model</a>
+  ·
+  <a href="#features">Features</a>
+  ·
+  <a href="#roadmap">Roadmap</a>
+</p>
+
 An interactive, forkable **Gray–Scott reaction–diffusion simulator** built with plain HTML, CSS and JavaScript.
 
 This project shows how simple local chemical rules can generate complex biological-looking patterns such as:
