@@ -13,11 +13,10 @@
   ·
   <a href="#what-is-this-project">What is this?</a>
   ·
-<<<<<<< HEAD
+
   <a href="#scientific-model">Scientific Model</a>
 =======
   <a href="#the-scientific-model">Scientific Model</a>
->>>>>>> ec048deaad8910cecfb5736ebacab39759758e7e
   ·
   <a href="#features">Features</a>
   ·
@@ -28,7 +27,7 @@
 
 ## What is this project?
 
-<<<<<<< HEAD
+ 
 This is an interactive simulation of **reaction–diffusion**, a mathematical model that helps explain how simple local rules can generate complex natural-looking patterns.
 
 In nature, related pattern-forming processes appear in:
@@ -36,7 +35,6 @@ In nature, related pattern-forming processes appear in:
 This is an interactive simulation of **reaction–diffusion**, a mathematical idea that explains how simple local rules can create complex natural-looking patterns.
 
 In nature, similar pattern-forming ideas appear in things like:
->>>>>>> ec048deaad8910cecfb5736ebacab39759758e7e
 
 - animal skin patterns
 - spots and stripes
@@ -47,20 +45,20 @@ In nature, similar pattern-forming ideas appear in things like:
 
 This project lets users change the simulation parameters and watch patterns grow, split, stabilise, or become unstable in real time.
 
-<<<<<<< HEAD
+ 
 The aim is to build a scientific simulation that is:
 =======
 The goal is to make a scientific simulation that is:
->>>>>>> ec048deaad8910cecfb5736ebacab39759758e7e
+ 
 
 - simple enough for students to understand
 - visual enough for science communication
 - clean enough for GitHub users to fork
-<<<<<<< HEAD
+ 
 - flexible enough for advanced learners and researchers to extend
 =======
 - flexible enough for researchers or advanced learners to extend
->>>>>>> ec048deaad8910cecfb5736ebacab39759758e7e
+ 
 
 ---
 
@@ -70,7 +68,7 @@ Try the interactive tool here:
 
 ```text
 https://biswajit1999.github.io/reaction-diffusion-morphogenesis-lab/
-<<<<<<< HEAD
+ 
 ```
 
 ---
@@ -313,4 +311,4 @@ You may use, modify, and fork the code. If you reuse the project publicly, attri
 © 2026 Biswajit Jana. All rights reserved for original project design, documentation, and visual presentation.
 ```
 =======
->>>>>>> ec048deaad8910cecfb5736ebacab39759758e7e
+ 
