@@ -1,60 +1,92 @@
-# Reaction–Diffusion Morphogenesis Lab
+<p align="center">
+  <img src="images/reaction-diffusion-hero.png" alt="Reaction–Diffusion Morphogenesis Lab hero image" width="100%">
+</p>
 
-An interactive, forkable **Gray–Scott reaction–diffusion simulator** built with plain HTML, CSS and JavaScript.
+<h1 align="center">Reaction–Diffusion Morphogenesis Lab</h1>
 
-This project shows how simple local chemical rules can generate complex biological-looking patterns such as:
+<p align="center">
+  <strong>An interactive Gray–Scott reaction–diffusion simulator for biological pattern formation.</strong>
+</p>
 
+<p align="center">
+  <a href="https://biswajit1999.github.io/reaction-diffusion-morphogenesis-lab/">Live Demo</a>
+  ·
+  <a href="#what-is-this-project">What is this?</a>
+  ·
+  <a href="#scientific-model">Scientific Model</a>
+  ·
+  <a href="#features">Features</a>
+  ·
+  <a href="#roadmap">Roadmap</a>
+</p>
+
+---
+
+## What is this project?
+
+This is an interactive simulation of **reaction–diffusion**, a mathematical model that helps explain how simple local rules can generate complex natural-looking patterns.
+
+In nature, related pattern-forming processes appear in:
+
+- animal skin patterns
+- spots and stripes
 - coral-like growth
-- dividing spots
-- maze structures
-- zebra-like stripes
-- worm-like trails
-- self-organising fronts
+- chemical waves
+- biological morphogenesis
+- self-organising structures
 
-It is designed to be useful from **student level to research level**: simple enough to understand in one file, but deep enough to extend into serious scientific-computing experiments.
+This project lets users change the simulation parameters and watch patterns grow, split, stabilise, or become unstable in real time.
+
+The aim is to build a scientific simulation that is:
+
+- simple enough for students to understand
+- visual enough for science communication
+- clean enough for GitHub users to fork
+- flexible enough for advanced learners and researchers to extend
 
 ---
 
 ## Live Demo
 
-If hosted with GitHub Pages, the demo will run at:
+Try the interactive tool here:
 
 ```text
-https://YOUR-USERNAME.github.io/reaction-diffusion-morphogenesis-lab/
+https://biswajit1999.github.io/reaction-diffusion-morphogenesis-lab/
 ```
 
 ---
 
-## Why this project exists
+## In simple words
 
-Many scientific simulations on GitHub are either:
+Think of this project as a **digital petri dish**.
 
-1. visually nice but scientifically shallow, or  
-2. mathematically serious but difficult for beginners to run.
+Inside the simulation, there are two imaginary chemicals.
 
-This repo tries to sit in the middle:
+One chemical spreads and feeds the system.  
+The other chemical reacts, grows, spreads, and competes with it.
 
-- no build tools
-- no framework
-- no package installation
-- no hidden backend
-- one readable `index.html`
-- interactive sliders
-- real-time plots
-- scientifically meaningful equations
+At first, the rules are very simple. But after many small updates, the surface begins to form patterns that look surprisingly natural: spots, stripes, branching shapes, maze-like structures, and coral-like growth.
 
-The aim is that a GCSE/A-level student can play with it, an undergraduate can read the code, and a PhD researcher can fork it into something more advanced.
+The interesting part is that nobody is drawing those shapes manually.
+
+They emerge from the rules.
+
+That is the main idea:
+
+```text
+simple local rules → complex global patterns
+```
 
 ---
 
-## The Scientific Model
+## Scientific Model
 
 This project uses the **Gray–Scott reaction–diffusion model**.
 
-Two chemical fields are simulated:
+There are two chemical fields:
 
 - `A` — the feed chemical
-- `B` — the activator / morphogen-like chemical
+- `B` — the activator chemical
 
 The equations are:
 
@@ -74,40 +106,84 @@ Where:
 | `D_B` | diffusion rate of B |
 | `F` | feed rate |
 | `k` | kill rate |
-| `∇²` | Laplacian / diffusion operator |
+| `∇²` | diffusion / spreading term |
 
-The model is simple, but it can produce surprisingly rich patterns.
+The simulation repeatedly updates these equations across a grid of pixels. Each pixel reacts with its neighbours, and over time large-scale structure emerges.
 
 ---
 
 ## Features
 
-- Interactive reaction–diffusion simulation
-- Drag-to-seed morphogen injection
-- Presets for coral, spots, worms, zebra and maze patterns
+- Interactive Gray–Scott reaction–diffusion simulation
+- Drag on the canvas to inject chemical `B`
+- Multiple presets:
+  - coral growth
+  - dividing spots
+  - worm trails
+  - zebra stripes
+  - maze instability
+- Adjustable scientific parameters:
+  - feed rate
+  - kill rate
+  - diffusion of A
+  - diffusion of B
+  - simulation speed
+  - brush size
+- Adjustable visual settings:
+  - colour palette
+  - contrast
+  - glow
 - Real-time telemetry:
   - mean activator level
   - variance
   - edge energy
   - active area
 - Live morphology trace graph
-- Multiple colour palettes
-- Adjustable:
-  - feed rate
-  - kill rate
-  - diffusion coefficients
-  - simulation speed
-  - brush size
-  - contrast
-  - glow
-- Works directly in the browser
-- Suitable for GitHub Pages
+- Day/night background toggle
+- Lightweight HTML/CSS/JavaScript implementation
+- Works directly with GitHub Pages
+
+---
+
+## How to use the simulator
+
+Open the live demo and try the following:
+
+1. Choose a preset from the left panel.
+2. Drag on the main field to inject chemical `B`.
+3. Change the feed rate `F` slightly.
+4. Change the kill rate `k` slightly.
+5. Watch how the pattern changes over time.
+
+Small changes can create very different structures.
+
+That sensitivity is one of the interesting parts of nonlinear systems.
+
+---
+
+## Why this project is useful
+
+Many scientific simulations are either visually interesting but hard to understand, or scientifically serious but difficult to run.
+
+This project is intentionally simple:
+
+- one single `index.html` file
+- no framework
+- no build tools
+- no installation required
+- no backend
+- runs directly in the browser
+- easy to fork and modify
+
+A school student can explore it visually.  
+An undergraduate can read the code and understand the model.  
+A researcher can fork it and add more advanced numerical analysis.
 
 ---
 
 ## How to Run Locally
 
-Because this is a single HTML file, you can simply open:
+You can simply open:
 
 ```text
 index.html
@@ -115,7 +191,7 @@ index.html
 
 in a browser.
 
-For a cleaner local server:
+For a cleaner local server, run:
 
 ```bash
 python -m http.server 8000
@@ -129,40 +205,33 @@ http://localhost:8000
 
 ---
 
-## Suggested GitHub Repository Name
+## Project Structure
 
 ```text
-reaction-diffusion-morphogenesis-lab
-```
-
-Alternative names:
-
-```text
-morphogenesis-lab
-gray-scott-simulator
-pattern-formation-lab
-turing-pattern-explorer
+reaction-diffusion-morphogenesis-lab/
+│
+├── index.html
+├── README.md
+├── LICENSE
+└── images/
+    └── reaction-diffusion-hero.png
 ```
 
 ---
 
-## Step-by-Step: Create the Repo
+## Built With
 
-### 1. Create a new GitHub repository
+- HTML5
+- CSS3
+- JavaScript
+- Canvas API
+- GitHub Pages
 
-Repository name:
+No external framework is required.
 
-```text
-reaction-diffusion-morphogenesis-lab
-```
+---
 
-Description:
-
-```text
-Interactive Gray–Scott reaction–diffusion simulator for biological pattern formation, built with plain HTML, CSS and JavaScript.
-```
-
-Recommended topics:
+## Suggested Repository Topics
 
 ```text
 reaction-diffusion
@@ -178,60 +247,36 @@ education
 
 ---
 
-### 2. Add files
-
-Upload:
-
-```text
-index.html
-README.md
-LICENSE
-```
-
----
-
-### 3. Enable GitHub Pages
-
-Go to:
-
-```text
-Settings → Pages
-```
-
-Then choose:
-
-```text
-Source: Deploy from a branch
-Branch: main
-Folder: /root
-```
-
-After a few minutes, GitHub Pages will give you a live URL.
-
----
-
 ## Roadmap
 
-Possible future extensions:
+Possible future improvements:
 
 - WebGL / GPU version
-- export PNG snapshots
+- PNG image export
 - parameter sweep mode
-- side-by-side comparison mode
+- side-by-side pattern comparison
+- Fourier spectrum analysis
 - automatic pattern classification
-- Fourier spectrum panel
-- anisotropic diffusion
-- spatially varying feed and kill maps
-- coupling to fluid flow
-- Python notebook version for analysis
+- mobile UI improvements
+- Python notebook version
+- research-style documentation page
+- blog post explaining the science behind the model
 
 ---
 
-## Credits
+## Visual Credit
 
-Created by **Biswajit Jana** as part of an academic/scientific computing portfolio.
+The README hero image is an AI-generated conceptual scientific illustration created for this project.
 
-Website:
+It is used as an artistic representation of reaction–diffusion morphogenesis and should not be interpreted as measured scientific data, microscope imagery, or a direct output of the simulator.
+
+---
+
+## Author
+
+Created by **Biswajit Jana** as part of an academic and scientific computing portfolio.
+
+Portfolio website:
 
 ```text
 https://biswajit1999.github.io/Biswajit_Jana.github.io/
@@ -243,4 +288,8 @@ https://biswajit1999.github.io/Biswajit_Jana.github.io/
 
 This project is released under the MIT License.
 
-You may use, modify, and fork the code, but please credit the original author if you reuse the project publicly.
+You may use, modify, and fork the code. If you reuse the project publicly, attribution to the original author is appreciated.
+
+```text
+© 2026 Biswajit Jana. All rights reserved for original project design, documentation, and visual presentation.
+```
