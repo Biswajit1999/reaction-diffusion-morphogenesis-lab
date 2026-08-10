@@ -308,4 +308,7 @@ You may use, modify, and fork the code. If you reuse the project publicly, attri
 © 2026 Biswajit Jana. All rights reserved for original project design, documentation, and visual presentation.
 ```
 =======
- 
+
+## Research Quality Upgrade
+
+See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer, reference anchors, equations and research boundaries added to this repository.

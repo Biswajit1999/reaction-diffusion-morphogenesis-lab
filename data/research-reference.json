@@ -1,0 +1,28 @@
+{
+  "title": "Reaction Diffusion Morphogenesis Lab",
+  "description": "Gray-Scott reaction-diffusion lab for nonlinear pattern formation, stability and morphogenesis visualisation.",
+  "equations": [
+    "du/dt = Du laplacian(u) - uv^2 + F(1-u)",
+    "dv/dt = Dv laplacian(v) + uv^2 - (F+k)v"
+  ],
+  "references": [
+    "Pearson, J.E., 1993. Complex patterns in a simple system. Science, 261(5118), pp.189-192."
+  ],
+  "anchors": [
+    {
+      "x": 0.0367,
+      "y": 0.0649,
+      "label": "mitosis-like regime"
+    },
+    {
+      "x": 0.022,
+      "y": 0.051,
+      "label": "stripe regime"
+    },
+    {
+      "x": 0.0545,
+      "y": 0.062,
+      "label": "spot regime"
+    }
+  ]
+}
