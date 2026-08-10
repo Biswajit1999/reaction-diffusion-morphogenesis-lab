@@ -280,7 +280,7 @@ Possible future improvements:
 
 ## Visual Credit
 
-The README hero image is an AI-generated conceptual scientific illustration created for this project.
+The README hero image is an original conceptual scientific illustration created for this project.
 
 It is used as an artistic representation of reaction–diffusion morphogenesis and should not be interpreted as measured scientific data, microscope imagery, or a direct output of the simulator.
 
