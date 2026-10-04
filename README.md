@@ -24,7 +24,7 @@
 
 ## What is this project?
 
- 
+
 This is an interactive simulation of **reaction–diffusion**, a mathematical model that helps explain how simple local rules can generate complex natural-looking patterns.
 
 In nature, related pattern-forming processes appear in:
@@ -42,20 +42,20 @@ In nature, similar pattern-forming ideas appear in things like:
 
 This project lets users change the simulation parameters and watch patterns grow, split, stabilise, or become unstable in real time.
 
- 
+
 The aim is to build a scientific simulation that is:
 =======
 The goal is to make a scientific simulation that is:
- 
+
 
 - simple enough for students to understand
 - visual enough for science communication
 - clean enough for GitHub users to fork
- 
+
 - flexible enough for advanced learners and researchers to extend
 =======
 - flexible enough for researchers or advanced learners to extend
- 
+
 
 ---
 
@@ -65,7 +65,7 @@ Try the interactive tool here:
 
 ```text
 https://biswajit1999.github.io/reaction-diffusion-morphogenesis-lab/
- 
+
 ```
 
 ---
@@ -76,7 +76,7 @@ Think of this project as a **digital petri dish**.
 
 Inside the simulation, there are two imaginary chemicals.
 
-One chemical spreads and feeds the system.  
+One chemical spreads and feeds the system.
 The other chemical reacts, grows, spreads, and competes with it.
 
 At first, the rules are very simple. But after many small updates, the surface begins to form patterns that look surprisingly natural: spots, stripes, branching shapes, maze-like structures, and coral-like growth.
@@ -189,8 +189,8 @@ This project is intentionally simple:
 - runs directly in the browser
 - easy to fork and modify
 
-A school student can explore it visually.  
-An undergraduate can read the code and understand the model.  
+A school student can explore it visually.
+An undergraduate can read the code and understand the model.
 A researcher can fork it and add more advanced numerical analysis.
 
 ---
@@ -308,7 +308,3 @@ You may use, modify, and fork the code. If you reuse the project publicly, attri
 © 2026 Biswajit Jana. All rights reserved for original project design, documentation, and visual presentation.
 ```
 =======
-
-## Research Quality Upgrade
-
-See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer, reference anchors, equations and research boundaries added to this repository.
