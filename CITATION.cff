@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this research software, please cite it using this metadata."
+title: "Reaction–Diffusion Morphogenesis Lab"
+abstract: "A forkable interactive Gray–Scott reaction–diffusion simulator for students, educators, and researchers."
+type: software
+authors:
+  - family-names: Jana
+    given-names: Biswajit
+repository-code: "https://github.com/Biswajit1999/reaction-diffusion-morphogenesis-lab"
+url: "https://biswajit1999.github.io/reaction-diffusion-morphogenesis-lab/"
+keywords:
+  - "astronomy"
+  - "astrophysics"
+  - "scientific computing"
