@@ -1,0 +1,11 @@
+# Gray–Scott numerical robustness study
+
+The browser implements explicit Euler with `dt=1`, a periodic nine-point Laplacian (centre -1; axial neighbours 0.2 each; diagonal neighbours 0.05 each), and **clamps** both chemical concentrations to [0, 1.2]. This optional NumPy research implementation mirrors the discrete stencil but deliberately **does not clamp** updates, allowing numerical instability to be observed rather than hidden. The browser itself is not changed.
+
+Three independent numerical checks:
+
+1. **Fourier stencil and linear stability.** The exact discrete Fourier eigenvalue is `lambda(kx,ky) = -1 + 0.4(cos kx + cos ky) + 0.2 cos kx cos ky`, bounded below by -1.6. Linearization around the homogeneous equilibrium `(A,B)=(1,0)` yields the conditional explicit-Euler stability bound `dt <= min(2/(1.6 DA + F), 2/(1.6 DB + F + k))`. At the browser default DA=1, DB=.5, F=.055, k=.062, dt=1 lies within this **linear** bound. At DA=1.5 (allowed by the slider), dt=1 exceeds the linear bound. A Nyquist-mode test confirms amplification in this case. This does not establish global nonlinear stability or predict actual visible patterns.
+2. **Temporal refinement and mass balance.** Seeded initial conditions are evolved at dt=1, .5, .25, .125 to the same final time, with RMS errors measured relative to the finest solution. With F=k=0, periodic diffusion and the equal-and-opposite reaction transfer conserve the discrete sum of A+B to roundoff (for the *unclipped* scheme). These checks test numerical implementation, not physical conservation in an open system.
+3. **Morphology power spectrum.** The non-DC 2D FFT of B estimates a dominant wavelength and an orientation-sensitive spectral anisotropy from the second moments in kx and ky. Sinusoidal reference fields verify wavelength recovery and 90-degree axis-swap sign reversal. These diagnostics are descriptive and do not prove a Turing mechanism or biological pattern classification.
+
+Run `python -m pytest -q tests/test_gray_scott_robustness.py` and `python -m research.run_gray_scott_robustness` after installing NumPy and pytest. Outputs are deterministic and synthetic; no observational datasets are used. The CI workflow runs both commands and uploads JSON. No scientific results should be interpreted as experimental validation of morphogenesis.
